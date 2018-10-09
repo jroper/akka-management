@@ -45,6 +45,8 @@ object KubernetesApiSimpleServiceDiscovery {
       port <- container.ports.getOrElse(Seq.empty).find(_.name.contains(portName))
       itemStatus <- item.status
       ip <- itemStatus.podIP
+      // This host may not be resolvable, for example when 'pods disabled' is configured
+      // https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/#coredns-configmap-options
       host = s"${ip.replace('.', '-')}.${podNamespace}.pod.${podDomain}"
     } yield
       ResolvedTarget(
